@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:id="@+id/group1"
+        android:checkableBehavior="single">
+        <item android:id="@+id/dashboard"
+            android:title="Dashboard"/>
+        <item android:id="@+id/notification"
+            android:title="Notifications"/>
+    </group>
+
+    <group android:id="@+id/group2"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/my_profile"
+            android:title="My profile"/>
+        <item
+            android:id="@+id/setting"
+            android:title="Settings"/>
+        <item
+            android:id="@+id/support"
+            android:title="Support"/>
+    </group>
+</menu>

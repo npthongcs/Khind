@@ -2,6 +2,7 @@ package com.example.khind.activity
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.MenuItem
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
@@ -23,7 +24,8 @@ class NotifyActivity : AppCompatActivity() {
     private fun setupToolbar() {
         val toolbar = findViewById<Toolbar>(R.id.toolbarNotify)
         setSupportActionBar(toolbar)
-
+        toolbar.title = "Notifications"
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
     private fun setupTabLayout() {
@@ -37,6 +39,13 @@ class NotifyActivity : AppCompatActivity() {
                 1 -> tab.text = "Alerts"
             }
         }.attach()
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId){
+            android.R.id.home -> onBackPressed()
+        }
+        return super.onOptionsItemSelected(item)
     }
 }
 

@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
@@ -13,30 +14,90 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import com.example.khind.R
+import com.example.khind.fragment.StatusFragment
+import com.example.khind.model.Sensor
+import com.example.khind.viewmodel.HomeViewModel
+import com.example.khind.viewmodel.LoginViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
+import kotlin.math.log
 
 
-class HomeActivity : AppCompatActivity() {
+class HomeActivity : AppCompatActivity(){
 
-    lateinit var mDrawerLayout: DrawerLayout
+    private lateinit var mDrawerLayout: DrawerLayout
+    private var loginViewModel = LoginViewModel()
+    private var homeViewModel = HomeViewModel()
+    private lateinit var token: String
+    private lateinit var reToken: String
+    var type: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
 
+        loginViewModel = ViewModelProvider(this).get(LoginViewModel::class.java)
+        homeViewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
+
+        token = intent.getStringExtra("token").toString()
+        reToken = intent.getStringExtra("reToken").toString()
+        loginViewModel.setToken(token,reToken)
+
+        makeObserver()
         setupToolBar()
         setupMenuBar()
         setupBottomNavigation()
 
+        homeViewModel.callAPISensors(token)
+        val fr = StatusFragment()
+        loadFragment(fr)
     }
+
+    fun getViewModelLogin(): LoginViewModel {
+        return this.loginViewModel
+    }
+
+    fun getViewModelHome(): HomeViewModel{
+        return this.homeViewModel
+    }
+
+    private fun makeObserver() {
+        loginViewModel.getReTokenLiveDataObserver().observe(this,{
+            if (it!=null){
+                token = it.data.token.token
+                reToken = it.data.token.refresh_token
+                loginViewModel.setToken(token, reToken)
+                Log.d("refresh token home activity",token)
+                when (type){
+                    "GET_SENSOR" -> homeViewModel.callAPISensors(token)
+                }
+            }
+        })
+
+        homeViewModel.getSensorsLiveDataObserver().observe(this,{
+            if (it!=null){
+                homeViewModel.setListSensorData(it.data)
+                homeViewModel.setNowSensorData(it.data[0])
+            } else {
+                type = "GET_SENSOR"
+                loginViewModel.callAPIRefreshToken(token,reToken)
+            }
+        })
+    }
+
 
     private fun setupBottomNavigation() {
         val botNav: BottomNavigationView = findViewById(R.id.bottom_nav)
         botNav.setOnNavigationItemSelectedListener {
             when (it.itemId){
-                R.id.status -> Toast.makeText(this,"status",Toast.LENGTH_SHORT).show()
+                R.id.status -> {
+                    title = "Status"
+                    if (homeViewModel.getNowSensorData()==null) homeViewModel.callAPISensors(token)
+                    loadFragment(StatusFragment())
+                }
                 R.id.mapview -> Toast.makeText(this,"map view",Toast.LENGTH_SHORT).show()
                 R.id.history -> Toast.makeText(this,"history",Toast.LENGTH_SHORT).show()
                 else -> false
@@ -44,6 +105,14 @@ class HomeActivity : AppCompatActivity() {
             return@setOnNavigationItemSelectedListener true
         }
 
+    }
+
+    private fun loadFragment(fragment: Fragment) {
+        // load fragment
+        val transaction = supportFragmentManager.beginTransaction()
+        transaction.replace(R.id.container, fragment)
+        transaction.addToBackStack(null)
+        transaction.commit()
     }
 
     private fun setupToolBar() {

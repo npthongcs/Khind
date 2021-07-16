@@ -12,9 +12,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
         <activity android:name=".activity.NotifyActivity"></activity>
-        <!-- <activity android:name=".activity.HomeActivity"></activity> -->
-        <activity android:name=".activity.MainActivity" />
-        <activity android:name=".activity.HomeActivity">
+         <activity android:name=".activity.HomeActivity"></activity>
+<!--        <activity android:name=".activity.MainActivity" />-->
+        <activity android:name=".activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

@@ -3,6 +3,8 @@
     package="com.example.khind">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
 
     <application
         android:allowBackup="true"
@@ -11,8 +13,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
-        <activity android:name=".activity.NotifyActivity"></activity>
-         <activity android:name=".activity.HomeActivity"></activity>
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyBonAYQCDF_ONnew5it8ie4HmHbgCmKHXc"/>
+
+        <activity android:name=".activity.NotifyActivity" />
+        <activity android:name=".activity.HomeActivity" />
 <!--        <activity android:name=".activity.MainActivity" />-->
         <activity android:name=".activity.MainActivity">
             <intent-filter>

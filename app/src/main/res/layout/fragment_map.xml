@@ -4,17 +4,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginTop="50dp"
-    tools:context=".fragment.StatusFragment">
+    tools:context=".fragment.MapFragment"
+    android:layout_marginTop="50dp">
 
-
-    <ImageView
-        android:id="@+id/imgStatus"
-        android:layout_width="277dp"
-        android:layout_height="285dp"
-        android:layout_marginTop="50dp"
+    <fragment
+        android:id="@+id/idMap"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="450dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -23,36 +21,36 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="110dp"
-        android:layout_marginTop="81dp"
+        android:layout_marginTop="40dp"
         android:layout_marginEnd="65dp"
         android:src="@drawable/ellipse_red"
         app:layout_constraintEnd_toStartOf="@+id/imageView5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imgStatus" />
+        app:layout_constraintTop_toBottomOf="@+id/idMap" />
 
     <ImageView
         android:id="@+id/imageView5"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="15dp"
-        android:layout_marginTop="81dp"
+        android:layout_marginTop="40dp"
         android:layout_marginEnd="15dp"
         android:src="@drawable/ellipse_ora"
         app:layout_constraintEnd_toStartOf="@+id/imageView6"
         app:layout_constraintStart_toEndOf="@+id/imageView4"
-        app:layout_constraintTop_toBottomOf="@+id/imgStatus" />
+        app:layout_constraintTop_toBottomOf="@+id/idMap" />
 
     <ImageView
         android:id="@+id/imageView6"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="65dp"
-        android:layout_marginTop="81dp"
+        android:layout_marginTop="40dp"
         android:layout_marginEnd="110dp"
         android:src="@drawable/ellipe_green"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/imageView5"
-        app:layout_constraintTop_toBottomOf="@+id/imgStatus" />
+        app:layout_constraintTop_toBottomOf="@+id/idMap" />
 
     <TextView
         android:id="@+id/textView6"
@@ -90,7 +88,7 @@
         app:layout_constraintTop_toBottomOf="@+id/imageView6" />
 
     <ImageView
-        android:id="@+id/idStatusText"
+        android:id="@+id/idStatusTextFr"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
@@ -99,4 +97,5 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView6" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

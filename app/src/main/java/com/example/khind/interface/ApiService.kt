@@ -1,14 +1,8 @@
 package com.example.khind.`interface`
 
-import com.example.khind.model.RefreshToken
-import com.example.khind.model.ResponseLogin
-import com.example.khind.model.ResponseSensor
-import com.example.khind.model.Token
+import com.example.khind.model.*
 import retrofit2.Call
-import retrofit2.http.GET
-import retrofit2.http.Header
-import retrofit2.http.POST
-import retrofit2.http.Query
+import retrofit2.http.*
 
 interface ApiService {
     @POST("auth/sign_in")
@@ -17,12 +11,24 @@ interface ApiService {
         @Query("password") password: String
     ): Call<ResponseLogin>
 
-    @GET("sensors")
-    fun getSensors(@Header("X-Http-Token") token: String): Call<ResponseSensor>
-
     @POST("auth/refresh_token")
     fun refreshToken(
         @Header("X-Refresh-Token") token: String,
         @Query("refresh_token") reToken: String
-    ) : Call<RefreshToken>
+    ): Call<RefreshToken>
+
+    @GET("sensors")
+    fun getSensors(@Header("X-Http-Token") token: String): Call<ResponseSensor>
+
+    @GET("sensors/{id}")
+    fun getDetailSensor(
+        @Header("X-Http-Token") token: String,
+        @Path("id") sensorID: String
+    ): Call<DetailSensor>
+
+    @GET("messages")
+    fun getMessage(
+        @Header("X-Http-Token") token: String,
+        @Query("page") page: Int
+    ): Call<ResponseMessage>
 }

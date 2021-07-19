@@ -8,10 +8,16 @@ class LoginViewModel: ViewModel() {
 
     var token: String = ""
     var reToken: String = ""
+    private var expiredAt: Long? = 0
 
-    fun setToken(token: String, reToken: String){
+    fun getExpired(): Long? {
+        return expiredAt
+    }
+
+    fun setToken(token: String, reToken: String, expired: Long){
         this.token = token
         this.reToken = reToken
+        expiredAt = expired
     }
 
     fun getTokenLogin():String {

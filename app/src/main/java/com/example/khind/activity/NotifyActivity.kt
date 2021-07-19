@@ -2,23 +2,27 @@ package com.example.khind.activity
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.widget.ViewPager2
 import com.example.khind.R
 import com.example.khind.adapter.ViewPagerAdapter
+import com.example.khind.viewmodel.LoginViewModel
+import com.example.khind.viewmodel.NotifyViewModel
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 
 class NotifyActivity : AppCompatActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_notify)
 
         setupTabLayout()
         setupToolbar()
-
     }
 
     private fun setupToolbar() {

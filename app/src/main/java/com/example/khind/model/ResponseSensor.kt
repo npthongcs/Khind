@@ -8,6 +8,6 @@ data class Sensor(
     val id: String,
     val display_name: String,
     val alarm: String,
-    val latitude: String?,
-    val longitude: String?
+    val latitude: Double?,
+    val longitude: Double?
 )

@@ -34,8 +34,10 @@ class MainActivity : AppCompatActivity() {
 
     private fun getData() {
         binding.btnLogin.setOnClickListener {
-            val email: String = binding.etEmail.text.toString()
-            val password: String = binding.etPassword.text.toString()
+            var email: String = binding.etEmail.text.toString() // nho xoa
+            var password: String = binding.etPassword.text.toString()
+            email = "tahn@vinova.sg"
+            password = "vinova123"
             if (email!="" && password!="") {
                 viewModel.callAPILogin(email,password)
             } else {
@@ -49,8 +51,7 @@ class MainActivity : AppCompatActivity() {
         viewModel.getLoginLiveDataObserver().observe(this,{
             if (it!=null){
                 val intent = Intent(this,HomeActivity::class.java)
-                intent.putExtra("token",it.data.token.token)
-                intent.putExtra("reToken",it.data.token.refresh_token)
+                intent.putExtra("user",it.data.token)
                 startActivity(intent)
             } else {
                 Toast.makeText(this,"Email or password is invalid",Toast.LENGTH_SHORT).show()

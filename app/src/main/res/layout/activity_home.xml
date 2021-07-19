@@ -9,6 +9,7 @@
     android:fitsSystemWindows="true">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layoutHome"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -19,31 +20,70 @@
             android:layout_height="?attr/actionBarSize"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent" >
 
-        <TextView
-            android:id="@+id/changeLocation"
+            <TextView
+                android:id="@+id/title_toolbar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:fontFamily="@font/rubik_medium"
+                android:textColor="@color/black"
+                android:textSize="20sp"
+                tools:layout_editor_absoluteX="167dp"
+                tools:layout_editor_absoluteY="18dp"
+                tools:text="Title toolbar" />
+
+        </androidx.appcompat.widget.Toolbar>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/idChangeLocation"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Location"
-            android:background="@color/design_default_color_primary"
+            android:layout_height="50dp"
+            android:background="@color/white"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/toolbar" />
+            app:layout_constraintTop_toBottomOf="@+id/toolbar">
+
+            <TextView
+                android:id="@+id/nowSensor"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="30dp"
+                android:fontFamily="@font/rubik"
+                android:textColor="#000"
+                android:textSize="18sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="TextView" />
+
+            <ImageView
+                android:id="@+id/imgChangeLo"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:layout_marginEnd="35dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/vector" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <FrameLayout
             android:id="@+id/container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="100dp">
+            android:layout_marginTop="60dp"
+            android:layout_marginStart="0dp"
+            android:layout_marginEnd="0dp">
 
             <com.google.android.material.bottomnavigation.BottomNavigationView
                 android:id="@+id/bottom_nav"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="0dp"
-                android:layout_marginStart="0dp"
                 android:layout_gravity="bottom"
+                android:layout_marginStart="0dp"
+                android:layout_marginEnd="0dp"
                 android:background="@color/white"
                 app:itemBackground="@drawable/check_uncheck"
                 app:itemIconTint="@color/black"

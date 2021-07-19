@@ -45,17 +45,14 @@ class StatusFragment : Fragment() {
 
     private fun setState() {
         val sensor = homeViewModel.getNowSensorData()
-        Log.d("sensor","go go")
-        if (sensor==null) homeViewModel.callAPISensors(token)
-        else {
-            when (sensor.alarm){
-                "clear" -> {
-                    imgStatus.setImageResource(R.drawable.green_status)
-                    imgStatusText.visibility = View.GONE
-                }
-                "warning" -> imgStatus.setImageResource(R.drawable.orange_status)
-                "alert" -> imgStatus.setImageResource(R.drawable.red_status)
+        homeActivity.setNameAddress()
+        when (sensor?.alarm){
+            "clear" -> {
+                imgStatus.setImageResource(R.drawable.green_status)
+                imgStatusText.setImageResource(R.drawable.allclear)
             }
+            "warning" -> imgStatus.setImageResource(R.drawable.orange_status)
+            "alert" -> imgStatus.setImageResource(R.drawable.red_status)
         }
     }
 

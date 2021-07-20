@@ -2,17 +2,17 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-        <item android:id="@+id/status"
+        <item android:id="@+id/statusFragment"
             android:icon="@drawable/polygon"
             app:showAsAction="ifRoom"
             android:checkable="true"
             android:title="Status"/>
-        <item android:id="@+id/mapview"
+        <item android:id="@+id/mapFragment"
             android:icon="@drawable/mapview"
             app:showAsAction="ifRoom"
             android:checkable="true"
             android:title="Lightning map"/>
-        <item android:id="@+id/history"
+        <item android:id="@+id/historyFragment"
             android:checkable="true"
             android:icon="@drawable/ic_history"
             app:showAsAction="ifRoom"

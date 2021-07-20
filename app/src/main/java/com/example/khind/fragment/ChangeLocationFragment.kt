@@ -23,47 +23,47 @@ class ChangeLocationFragment : Fragment(), LocationOnClickListener {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        val view = inflater.inflate(R.layout.fragment_change_location, container, false)
-        val rvChangeLocation = view.findViewById<RecyclerView>(R.id.rvChangeLocation)
-        val homeActivity = activity as HomeActivity
-        val homeViewModel = homeActivity.getViewModelHome()
-        homeViewModel.getSensorsLiveDataObserver().observe(viewLifecycleOwner, {
-            val locationAdapter = LocationAdapter(it.data)
-            locationAdapter.setOnCallBackListener(this)
-            rvChangeLocation.apply {
-                setHasFixedSize(true)
-                layoutManager = LinearLayoutManager(view.context)
-                adapter = locationAdapter
-            }
-
-        })
+//        val view = inflater.inflate(R.layout.fragment_change_location, container, false)
+//        val rvChangeLocation = view.findViewById<RecyclerView>(R.id.rvChangeLocation)
+//        val homeActivity = activity as HomeActivity
+//        val homeViewModel = homeActivity.getViewModelHome()
+//        homeViewModel.getSensorsLiveDataObserver().observe(viewLifecycleOwner, {
+//            val locationAdapter = LocationAdapter(it.data)
+//            locationAdapter.setOnCallBackListener(this)
+//            rvChangeLocation.apply {
+//                setHasFixedSize(true)
+//                layoutManager = LinearLayoutManager(view.context)
+//                adapter = locationAdapter
+//            }
+//
+//        })
         return view
     }
-
-    override fun onResume() {
-        super.onResume()
-        val homeActivity = activity as HomeActivity
-        val botBar = homeActivity.findViewById<BottomNavigationView>(R.id.bottom_nav)
-        botBar.visibility = View.GONE
-        (activity as AppCompatActivity).supportActionBar?.hide()
-    }
-
-    override fun onStop() {
-        super.onStop()
-        val homeActivity = activity as HomeActivity
-        val botBar = homeActivity.findViewById<BottomNavigationView>(R.id.bottom_nav)
-        botBar.visibility = View.VISIBLE
-        (activity as AppCompatActivity).supportActionBar?.show()
-    }
-
+//
+//    override fun onResume() {
+//        super.onResume()
+//        val homeActivity = activity as HomeActivity
+//        val botBar = homeActivity.findViewById<BottomNavigationView>(R.id.bottom_nav)
+//        botBar.visibility = View.GONE
+//        (activity as AppCompatActivity).supportActionBar?.hide()
+//    }
+//
+//    override fun onStop() {
+//        super.onStop()
+//        val homeActivity = activity as HomeActivity
+//        val botBar = homeActivity.findViewById<BottomNavigationView>(R.id.bottom_nav)
+//        botBar.visibility = View.VISIBLE
+//        (activity as AppCompatActivity).supportActionBar?.show()
+//    }
+//
     override fun onItemClick(sensor: Sensor) {
-        val homeActivity = activity as HomeActivity
-        val homeViewModel = homeActivity.getViewModelHome()
-        homeViewModel.setNowSensorData(sensor)
-        val transaction = homeActivity.supportFragmentManager.beginTransaction()
-        transaction.replace(R.id.container, StatusFragment())
-        transaction.addToBackStack(null)
-        transaction.commit()
+//        val homeActivity = activity as HomeActivity
+//        val homeViewModel = homeActivity.getViewModelHome()
+//        homeViewModel.setNowSensorData(sensor)
+//        val transaction = homeActivity.supportFragmentManager.beginTransaction()
+//        transaction.replace(R.id.container, StatusFragment())
+//        transaction.addToBackStack(null)
+//        transaction.commit()
     }
 
 

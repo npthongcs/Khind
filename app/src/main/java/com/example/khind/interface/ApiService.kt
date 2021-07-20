@@ -1,6 +1,7 @@
 package com.example.khind.`interface`
 
 import com.example.khind.model.*
+import okhttp3.MultipartBody
 import retrofit2.Call
 import retrofit2.http.*
 
@@ -31,4 +32,19 @@ interface ApiService {
         @Header("X-Http-Token") token: String,
         @Query("page") page: Int
     ): Call<ResponseMessage>
+
+    @PUT("users/change_password")
+    fun changePassword(
+        @Header("X-Http-Token") token: String,
+        @Query("password") password: String,
+        @Query("password_confirmation") confirmPass: String,
+        @Query("currentPass") currentPass: String
+    ): Call<ResponseChangePass>
+
+    @Multipart
+    @PUT("users/avatar")
+    fun changeAvatar(
+        @Header("X-Http-Token") token: String,
+        @Part avt: MultipartBody.Part
+    ): Call<ResponseChangeAvatar>
 }

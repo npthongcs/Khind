@@ -4,7 +4,7 @@ import java.io.Serializable
 
 data class ResponseLogin(val data: Data)
 
-data class Data(val id: String, val email: String, val token: Token)
+data class Data(val id: String, val email: String, val token: Token, val avatar: String?): Serializable
 
 data class RefreshToken(val data: ReData)
 
@@ -15,3 +15,5 @@ data class Token(
     val expired_at: Long,
     val refresh_token: String
 ): Serializable
+
+data class ResponseChangePass(val message: String, val status: Boolean)

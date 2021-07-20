@@ -51,7 +51,7 @@ class MainActivity : AppCompatActivity() {
         viewModel.getLoginLiveDataObserver().observe(this,{
             if (it!=null){
                 val intent = Intent(this,HomeActivity::class.java)
-                intent.putExtra("user",it.data.token)
+                intent.putExtra("user",it.data)
                 startActivity(intent)
             } else {
                 Toast.makeText(this,"Email or password is invalid",Toast.LENGTH_SHORT).show()

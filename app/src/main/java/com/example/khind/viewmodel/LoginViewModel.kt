@@ -6,18 +6,22 @@ import com.example.khind.repository.LoginRepository
 class LoginViewModel: ViewModel() {
     private val loginRepository = LoginRepository()
 
-    var token: String = ""
-    var reToken: String = ""
-    private var expiredAt: Long? = 0
+    private var token: String = ""
+    private var reToken: String = ""
+    private var expiredAt: Long = 0
+    private var email: String = ""
+    private var avatar: String? = null
 
-    fun getExpired(): Long? {
+    fun getExpired(): Long {
         return expiredAt
     }
 
-    fun setToken(token: String, reToken: String, expired: Long){
+    fun setData(token: String, reToken: String, expired: Long, email: String, avatar: String?){
         this.token = token
         this.reToken = reToken
-        expiredAt = expired
+        this.expiredAt = expired
+        this.email = email
+        this.avatar = avatar
     }
 
     fun getTokenLogin():String {
@@ -26,6 +30,14 @@ class LoginViewModel: ViewModel() {
 
     fun getReTokenLogin():String {
         return reToken
+    }
+
+    fun getEmailData():String {
+        return email
+    }
+
+    fun getAvatarLink(): String?{
+        return avatar
     }
 
     fun getReTokenLiveDataObserver() = loginRepository.reTokenLiveDataObserver()

@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.os.PersistableBundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
@@ -16,11 +17,19 @@ import androidx.appcompat.widget.Toolbar
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
+import androidx.databinding.DataBindingUtil
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.NavController
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.*
 import com.example.khind.R
+import com.example.khind.databinding.ActivityHomeBinding
 import com.example.khind.fragment.*
+import com.example.khind.model.Data
 import com.example.khind.model.Sensor
 import com.example.khind.model.Token
 import com.example.khind.viewmodel.HomeViewModel
@@ -31,202 +40,101 @@ import kotlin.math.log
 import kotlin.properties.Delegates
 
 
-class HomeActivity : AppCompatActivity(){
+class HomeActivity : AppCompatActivity() {
 
-    companion object{
+    private lateinit var navController: NavController
+    private lateinit var appBarConfiguration: AppBarConfiguration
+    private lateinit var binding: ActivityHomeBinding
+
+    companion object {
+        lateinit var fragmentManager: FragmentManager
         var loginViewModel = LoginViewModel()
+        var homeViewModel = HomeViewModel()
     }
 
-    private lateinit var mDrawerLayout: DrawerLayout
-    private var homeViewModel = HomeViewModel()
     private lateinit var token: String
     private var expired by Delegates.notNull<Long>()
     private lateinit var reToken: String
-    private var type: String = ""
-    lateinit var txtAddress: TextView
+    var email: String = ""
+    var avatar: String? = null
+    private lateinit var txtAddress: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_home)
 
-        txtAddress = findViewById(R.id.nowSensor)
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_home)
+
+        txtAddress = binding.nowSensor
         loginViewModel = ViewModelProvider(this).get(LoginViewModel::class.java)
         homeViewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
+        HomeActivity.fragmentManager = supportFragmentManager
 
-        val user: Token = intent.getSerializableExtra("user") as Token
-        token = user.token
-        reToken = user.refresh_token
-        expired = user.expired_at
-        loginViewModel.setToken(token,reToken,expired)
-        type = ""
+        val user: Data = intent.getSerializableExtra("user") as Data
+        token = user.token.token
+        reToken = user.token.refresh_token
+        expired = user.token.expired_at
+        email = user.email
+        avatar = user.avatar
+        loginViewModel.setData(token, reToken, expired, email, avatar)
+
+        // set navigation
+        val navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+        navController = navHostFragment.findNavController()
+
+        appBarConfiguration = AppBarConfiguration(
+            setOf(
+                R.id.statusFragment,
+                R.id.mapFragment,
+                R.id.historyFragment,
+                R.id.profileFragment
+            ),
+            binding.drawerLayout
+        )
+
+        setSupportActionBar(binding.toolbar)
+        setupActionBarWithNavController(navController, appBarConfiguration)
+
+        binding.navView.setupWithNavController(navController)
+        binding.bottomNav.setupWithNavController(navController)
 
         makeObserver()
-        setupToolBar()
-        setupMenuBar()
-        setupBottomNavigation()
-        setupOnClickChangeLocation()
-
-        val fr = StatusFragment()
-        loadFragment(fr)
-        if (expired*1000>System.currentTimeMillis()) homeViewModel.callAPISensors(token)
-        else {
-            type = "GET_SENSOR"
-            loginViewModel.callAPIRefreshToken(token,reToken)
-        }
     }
 
-    private fun setupOnClickChangeLocation() {
-        val tvNowSensor = findViewById<TextView>(R.id.nowSensor)
-        tvNowSensor.setOnClickListener {
-            loadFragment(ChangeLocationFragment())
-            if (expired*1000>System.currentTimeMillis()) homeViewModel.callAPISensors(token)
-            else {
-                type = "GET_SENSOR"
-                loginViewModel.callAPIRefreshToken(token,reToken)
+    private fun makeObserver() {
+        loginViewModel.getReTokenLiveDataObserver().observe(this, {
+            if (it != null) {
+                token = it.data.token.token
+                reToken = it.data.token.refresh_token
+                expired = it.data.token.expired_at
+                loginViewModel.setData(token, reToken, expired, email, avatar)
+                Log.d("refresh token from home activity",token)
             }
-        }
-        val img = findViewById<ImageView>(R.id.imgChangeLo)
-        img.setOnClickListener {
-            loadFragment(StatusFragment())
-        }
+        })
     }
 
     fun getViewModelLogin(): LoginViewModel {
         return loginViewModel
     }
 
-    fun getViewModelHome(): HomeViewModel{
-        return this.homeViewModel
+    fun getViewModelHome(): HomeViewModel {
+        return homeViewModel
     }
 
-    fun setNameAddress(){
+    fun setNameAddress() {
         txtAddress.text = homeViewModel.getNowSensorData()?.display_name ?: ""
     }
 
-    private fun makeObserver() {
-        loginViewModel.getReTokenLiveDataObserver().observe(this,{
-            if (it!=null){
-                token = it.data.token.token
-                reToken = it.data.token.refresh_token
-                expired = it.data.token.expired_at
-                loginViewModel.setToken(token, reToken,expired)
-                Log.d("refresh token home activity",token)
-                when (type){
-                    "GET_SENSOR" -> homeViewModel.callAPISensors(token)
-                    "GET_DETAIL_SENSOR" -> homeViewModel.getNowSensorData()?.let { it1 ->
-                        homeViewModel.callAPIDetailSensor(token, it1.id)
-                    }
-                }
-                type = ""
-            }
-        })
-
-        homeViewModel.getSensorsLiveDataObserver().observe(this,{
-            if (it!=null){
-                if (homeViewModel.getNowSensorData() == null) {
-                    homeViewModel.setNowSensorData(it.data[0])
-                }
-            }
-        })
-    }
-
-
-    private fun setupBottomNavigation() {
-        val botNav: BottomNavigationView = findViewById(R.id.bottom_nav)
-        botNav.setOnNavigationItemSelectedListener {
-            when (it.itemId){
-                R.id.status -> {
-                    title = "Status"
-                    loadFragment(StatusFragment())
-                    if (homeViewModel.getNowSensorData()==null) {
-                        if (expired*1000>System.currentTimeMillis()) homeViewModel.callAPISensors(token)
-                        else {
-                            type = "GET_SENSOR"
-                            loginViewModel.callAPIRefreshToken(token,reToken)
-                        }
-                    }
-                }
-                R.id.mapview -> {
-                    title = "Map"
-                    val sensorID = homeViewModel.getNowSensorData()?.id
-                    if (sensorID!=null) {
-                        if (expired*1000>System.currentTimeMillis()) homeViewModel.callAPIDetailSensor(token, sensorID)
-                        else {
-                            type = "GET_DETAIL_SENSOR"
-                            loginViewModel.callAPIRefreshToken(token,reToken)
-                        }
-                    }
-                    loadFragment(MapFragment())
-                }
-                R.id.history -> {
-                    title = "History"
-                    loadFragment(HistoryFragment())
-                }
-            }
-            return@setOnNavigationItemSelectedListener true
-        }
-
-    }
-
-    private fun loadFragment(fragment: Fragment) {
-        // load fragment
-        val transaction = supportFragmentManager.beginTransaction()
-        transaction.replace(R.id.container, fragment)
-        transaction.addToBackStack(null)
-        transaction.commit()
-    }
-
-    private fun setupToolBar() {
-        val toolbar = findViewById<Toolbar>(R.id.toolbar)
-        val titleToolbar = toolbar.findViewById<TextView>(R.id.title_toolbar)
-        setSupportActionBar(toolbar)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.title = ""
-        titleToolbar.text = "Dashboard"
-
-        val styledAttributes =
-            theme.obtainStyledAttributes(intArrayOf(android.R.attr.actionBarSize))
-        val actionBarSize = styledAttributes.getDimension(0, 0f).toInt()
-        styledAttributes.recycle()
-
-        val drawable = ContextCompat.getDrawable(this,R.drawable.ic_menubar)
-        val bitmap = (drawable as BitmapDrawable).bitmap
-        val newDrawable: Drawable = BitmapDrawable(
-            resources,
-            Bitmap.createScaledBitmap(bitmap, actionBarSize/2, actionBarSize/2, true)
-        )
-        supportActionBar?.setHomeAsUpIndicator(newDrawable)
-    }
-
-    private fun setupMenuBar() {
-        mDrawerLayout = findViewById(R.id.drawer_layout)
-        val navigationView = findViewById<NavigationView>(R.id.nav_view)
-        navigationView.setNavigationItemSelectedListener(NavigationView.OnNavigationItemSelectedListener {
-            when (it.itemId){
-                R.id.dashboard -> Toast.makeText(this,"dashboard",Toast.LENGTH_SHORT).show()
-                R.id.notification -> Toast.makeText(this,"notification",Toast.LENGTH_SHORT).show()
-                R.id.my_profile -> loadFragment(ProfileFragment())
-                R.id.setting -> Toast.makeText(this,"setting",Toast.LENGTH_SHORT).show()
-                R.id.support -> Toast.makeText(this,"support",Toast.LENGTH_SHORT).show()
-            }
-            mDrawerLayout.closeDrawers()
-            return@OnNavigationItemSelectedListener true
-        })
-    }
-
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.menu,menu)
-        return super.onCreateOptionsMenu(menu)
+        menuInflater.inflate(R.menu.menu, menu)
+        return true
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId){
-            android.R.id.home -> mDrawerLayout.openDrawer(GravityCompat.START)
-            R.id.idNotify -> {
-                val intent = Intent(this,NotifyActivity::class.java)
-                startActivity(intent)
-            }
-        }
-        return super.onOptionsItemSelected(item)
+        return item.onNavDestinationSelected(navController) || super.onOptionsItemSelected(item)
     }
 }

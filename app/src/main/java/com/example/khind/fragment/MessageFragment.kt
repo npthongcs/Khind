@@ -6,23 +6,23 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.khind.R
 import com.example.khind.activity.HomeActivity
-import com.example.khind.activity.NotifyActivity
 import com.example.khind.adapter.MessageAdapter
 import com.example.khind.listener.MessageOnClickListener
 import com.example.khind.model.Message
+import com.example.khind.viewmodel.LoginViewModel
 import com.example.khind.viewmodel.NotifyViewModel
 import kotlin.properties.Delegates
 
 
 class MessageFragment : Fragment(), MessageOnClickListener {
 
-    private val loginViewModel = HomeActivity().getViewModelLogin()
+    private lateinit var loginViewModel: LoginViewModel
     private lateinit var notifyViewModel: NotifyViewModel
     private lateinit var messageAdapter: MessageAdapter
     private lateinit var rvMessage: RecyclerView
@@ -37,14 +37,15 @@ class MessageFragment : Fragment(), MessageOnClickListener {
     ): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_message, container, false)
+        loginViewModel = HomeActivity().getViewModelLogin()
         notifyViewModel = ViewModelProvider(this).get(NotifyViewModel::class.java)
         messageAdapter = MessageAdapter(notifyViewModel.getListMessageData())
-        rvMessage = view.findViewById<RecyclerView>(R.id.rvMessage)
+        rvMessage = view.findViewById(R.id.rvMessage)
         expired = loginViewModel.getExpired()!!
 
         makeObserver()
 
-        if (expired*1000>System.currentTimeMillis()) notifyViewModel.callApiGetMessages(loginViewModel.token,pageCount)
+        if (expired*1000>System.currentTimeMillis()) notifyViewModel.callApiGetMessages(loginViewModel.getTokenLogin(),pageCount)
         else {
             isMessage = true
             loginViewModel.callAPIRefreshToken(loginViewModel.getTokenLogin(),loginViewModel.getReTokenLogin())
@@ -70,7 +71,7 @@ class MessageFragment : Fragment(), MessageOnClickListener {
                     if (linearLayoutManager.findLastCompletelyVisibleItemPosition()==messageAdapter.itemCount-1){
                         isLoad = true
                         pageCount++
-                        if (expired*1000>System.currentTimeMillis()) notifyViewModel.callApiGetMessages(loginViewModel.token,pageCount)
+                        if (expired*1000>System.currentTimeMillis()) notifyViewModel.callApiGetMessages(loginViewModel.getTokenLogin(),pageCount)
                         else {
                             isMessage = true
                             loginViewModel.callAPIRefreshToken(loginViewModel.getTokenLogin(),loginViewModel.getReTokenLogin())
@@ -104,7 +105,8 @@ class MessageFragment : Fragment(), MessageOnClickListener {
     }
 
     override fun onMessageClick(data: Message) {
-        Log.d("message clicked",data.title)
+        val action = NotifyFragmentDirections.actionNotifyFragmentToDetailMessageFragment(data)
+        findNavController().navigate(action)
     }
 
 }

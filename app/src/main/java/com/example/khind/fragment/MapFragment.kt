@@ -8,8 +8,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.TextView
 import com.example.khind.R
 import com.example.khind.activity.HomeActivity
+import com.example.khind.model.Sensor
 import com.example.khind.viewmodel.HomeViewModel
 import com.example.khind.viewmodel.LoginViewModel
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -18,23 +20,28 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.CircleOptions
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import kotlin.properties.Delegates
 
 class MapFragment : Fragment() {
 
     lateinit var homeActivity: HomeActivity
     private lateinit var homeViewModel: HomeViewModel
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        homeActivity = activity as HomeActivity
-        homeViewModel = homeActivity.getViewModelHome()
-    }
+    private lateinit var loginViewModel: LoginViewModel
+    var expired by Delegates.notNull<Long>()
+    var isCall = false
+    lateinit var nowSensor: Sensor
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
+        val titleToolBar = activity?.findViewById<TextView>(R.id.titleToolbar)
+        (activity as HomeActivity).supportActionBar?.title=""
+        titleToolBar?.text = "Dashboard"
+        homeActivity = activity as HomeActivity
+        homeViewModel = homeActivity.getViewModelHome()
+        loginViewModel = homeActivity.getViewModelLogin()
         val view = inflater.inflate(R.layout.fragment_map, container, false)
         val img = view.findViewById<ImageView>(R.id.idStatusTextFr)
         if (homeViewModel.getNowSensorData()?.alarm == "clear") img.setImageResource(R.drawable.allclear)
@@ -44,6 +51,21 @@ class MapFragment : Fragment() {
             homeViewModel.setMapData(it)
         }
         makeObserver()
+
+        expired = loginViewModel.getExpired()
+        nowSensor = homeViewModel.getNowSensorData()!!
+
+        if (expired * 1000 > System.currentTimeMillis()) homeViewModel.callAPIDetailSensor(
+            loginViewModel.getTokenLogin(),
+            nowSensor.id
+        )
+        else {
+            isCall = true
+            loginViewModel.callAPIRefreshToken(
+                loginViewModel.getTokenLogin(),
+                loginViewModel.getReTokenLogin()
+            )
+        }
         return view
     }
 
@@ -54,6 +76,13 @@ class MapFragment : Fragment() {
                 val lon = it.data.longitude
                 val title = it.data.display_name
                 if (lat != null && lon != null) createMarker(lat, lon, title)
+            }
+        })
+
+        loginViewModel.getReTokenLiveDataObserver().observe(viewLifecycleOwner, {
+            if (it != null && isCall) {
+                homeViewModel.callAPIDetailSensor(loginViewModel.getTokenLogin(), nowSensor.id)
+                isCall = false
             }
         })
     }

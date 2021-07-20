@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/statusFragment">
+
+    <fragment
+        android:id="@+id/statusFragment"
+        android:name="com.example.khind.fragment.StatusFragment"
+        android:label="Dashboard"
+        tools:layout="@layout/fragment_status" />
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.example.khind.fragment.ProfileFragment"
+        android:label="My profile"
+        tools:layout="@layout/fragment_profile" >
+        <action
+            android:id="@+id/action_profileFragment_to_changePassFragment"
+            app:destination="@id/changePassFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/mapFragment"
+        android:name="com.example.khind.fragment.MapFragment"
+        android:label="Dashboard"
+        tools:layout="@layout/fragment_map" />
+    <fragment
+        android:id="@+id/historyFragment"
+        android:name="com.example.khind.fragment.HistoryFragment"
+        android:label="Dashboard"
+        tools:layout="@layout/fragment_history" />
+    <fragment
+        android:id="@+id/changePassFragment"
+        android:name="com.example.khind.fragment.ChangePassFragment"
+        android:label="Change Password"
+        tools:layout="@layout/fragment_change_pass" />
+    <fragment
+        android:id="@+id/notifyFragment"
+        android:name="com.example.khind.fragment.NotifyFragment"
+        android:label="Notifications"
+        tools:layout="@layout/fragment_notify" >
+        <action
+            android:id="@+id/action_notifyFragment_to_detailMessageFragment"
+            app:destination="@id/detailMessageFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/detailMessageFragment"
+        android:name="com.example.khind.fragment.DetailMessageFragment"
+        android:label="Details"
+        tools:layout="@layout/fragment_detail_message" >
+        <argument
+            android:name="data"
+            app:argType="com.example.khind.model.Message" />
+    </fragment>
+    <fragment
+        android:id="@+id/settingFragment"
+        android:name="com.example.khind.fragment.SettingFragment"
+        android:label="fragment_setting"
+        tools:layout="@layout/fragment_setting" >
+        <action
+            android:id="@+id/action_settingFragment_to_setupScheduleFragment"
+            app:destination="@id/setupScheduleFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/setupScheduleFragment"
+        android:name="com.example.khind.fragment.SetupScheduleFragment"
+        android:label="fragment_setup_schedule"
+        tools:layout="@layout/fragment_setup_schedule" />
+</navigation>

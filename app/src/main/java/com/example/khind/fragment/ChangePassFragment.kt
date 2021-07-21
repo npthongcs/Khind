@@ -13,13 +13,13 @@ import kotlin.properties.Delegates
 
 class ChangePassFragment : Fragment(R.layout.fragment_change_pass) {
 
-    private val loginViewModel = HomeActivity().getViewModelLogin()
-    private val homeViewModel = HomeActivity().getViewModelHome()
-    private var expired by Delegates.notNull<Long>()
     var isChange = false
-    private var currentPass: String = ""
     private var newPass: String = ""
-    private var confirmPass: String =""
+    private var confirmPass: String = ""
+    private var currentPass: String = ""
+    private var expired by Delegates.notNull<Long>()
+    private val homeViewModel = HomeActivity().getViewModelHome()
+    private val loginViewModel = HomeActivity().getViewModelLogin()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,7 +38,7 @@ class ChangePassFragment : Fragment(R.layout.fragment_change_pass) {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_change_pass, container, false)
         val titleToolBar = activity?.findViewById<TextView>(R.id.titleToolbar)
-        (activity as HomeActivity).supportActionBar?.title=""
+        (activity as HomeActivity).supportActionBar?.title = ""
         titleToolBar?.text = "Change Password"
         val btnChangePass = view.findViewById<Button>(R.id.btnChangePass)
 
@@ -49,10 +49,19 @@ class ChangePassFragment : Fragment(R.layout.fragment_change_pass) {
             newPass = view.findViewById<EditText>(R.id.etNewPass).text.toString()
             confirmPass = view.findViewById<EditText>(R.id.etConfirmPass).text.toString()
 
-            if (currentPass=="" || newPass== "" || confirmPass== "" )
-                Toast.makeText(context,"Old/new/confirm password is empty",Toast.LENGTH_SHORT).show()
-            else if (newPass.length<6) Toast.makeText(context,"Password is too short (minimum is 6 characters)",Toast.LENGTH_SHORT).show()
-            else if (newPass!=confirmPass) Toast.makeText(context,"Passwords doesn't match",Toast.LENGTH_SHORT).show()
+            if (currentPass == "" || newPass == "" || confirmPass == "")
+                Toast.makeText(context, "Old/new/confirm password is empty", Toast.LENGTH_SHORT)
+                    .show()
+            else if (newPass.length < 6) Toast.makeText(
+                context,
+                "Password is too short (minimum is 6 characters)",
+                Toast.LENGTH_SHORT
+            ).show()
+            else if (newPass != confirmPass) Toast.makeText(
+                context,
+                "Passwords doesn't match",
+                Toast.LENGTH_SHORT
+            ).show()
             else {
                 expired = loginViewModel.getExpired()
                 if (expired * 1000 > System.currentTimeMillis()) homeViewModel.callAPIChangePass(
@@ -61,7 +70,10 @@ class ChangePassFragment : Fragment(R.layout.fragment_change_pass) {
                     confirmPass,
                     currentPass
                 ) else {
-                    loginViewModel.callAPIRefreshToken(loginViewModel.getTokenLogin(),loginViewModel.getReTokenLogin())
+                    loginViewModel.callAPIRefreshToken(
+                        loginViewModel.getTokenLogin(),
+                        loginViewModel.getReTokenLogin()
+                    )
                     isChange = true
                 }
             }
@@ -70,14 +82,23 @@ class ChangePassFragment : Fragment(R.layout.fragment_change_pass) {
     }
 
     private fun makeObserver() {
-        homeViewModel.getChangePassLiveDataObserver().observe(viewLifecycleOwner,{
-            if (!it.status) Toast.makeText(context,"Current password is invalid",Toast.LENGTH_SHORT).show()
-            else Toast.makeText(context,"Change password is successful",Toast.LENGTH_SHORT).show()
+        homeViewModel.getChangePassLiveDataObserver().observe(viewLifecycleOwner, {
+            if (!it.status) Toast.makeText(
+                context,
+                "Current password is invalid",
+                Toast.LENGTH_SHORT
+            ).show()
+            else Toast.makeText(context, "Change password is successful", Toast.LENGTH_SHORT).show()
         })
 
-        loginViewModel.getReTokenLiveDataObserver().observe(viewLifecycleOwner,{
-            if (it!=null && isChange){
-                homeViewModel.callAPIChangePass(loginViewModel.getTokenLogin(),newPass,confirmPass,currentPass)
+        loginViewModel.getReTokenLiveDataObserver().observe(viewLifecycleOwner, {
+            if (it != null && isChange) {
+                homeViewModel.callAPIChangePass(
+                    loginViewModel.getTokenLogin(),
+                    newPass,
+                    confirmPass,
+                    currentPass
+                )
                 isChange = false
             }
         })

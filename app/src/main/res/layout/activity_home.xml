@@ -39,7 +39,7 @@
                     android:fontFamily="@font/rubik_medium"
                     android:text="TextView"
                     android:textColor="@color/black"
-                    android:textSize="18sp"
+                    android:textSize="20sp"
                     app:layout_constraintBottom_toBottomOf="@+id/toolbar"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.5"

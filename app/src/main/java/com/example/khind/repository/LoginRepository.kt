@@ -14,44 +14,45 @@ import retrofit2.Response
 
 
 class LoginRepository {
-    private var reTokenLiveData = MutableLiveData<RefreshToken>()
     var loginLiveData = MutableLiveData<ResponseLogin>()
-    private val retroInstance: ApiService = RetroInstance.getRetroInstance().create(ApiService::class.java)
+    private var reTokenLiveData = MutableLiveData<RefreshToken>()
+    private val retroInstance: ApiService =
+        RetroInstance.getRetroInstance().create(ApiService::class.java)
 
-    fun reTokenLiveDataObserver(): MutableLiveData<RefreshToken>{
+    fun reTokenLiveDataObserver(): MutableLiveData<RefreshToken> {
         return reTokenLiveData
     }
 
-    fun loginLiveDataObserver(): MutableLiveData<ResponseLogin>{
+    fun loginLiveDataObserver(): MutableLiveData<ResponseLogin> {
         return loginLiveData
     }
 
-    fun fetchLogin(email: String, password: String){
+    fun fetchLogin(email: String, password: String) {
         val call = retroInstance.login(email, password)
-        call.enqueue(object : Callback<ResponseLogin>{
+        call.enqueue(object : Callback<ResponseLogin> {
             override fun onResponse(call: Call<ResponseLogin>, response: Response<ResponseLogin>) {
-                if (response.code()==200) loginLiveData.postValue(response.body())
+                if (response.code() == 200) loginLiveData.postValue(response.body())
                 else loginLiveData.postValue(null)
             }
 
             override fun onFailure(call: Call<ResponseLogin>, t: Throwable) {
-                Log.d("call api login","failed")
+                Log.d("call api login", "failed")
             }
 
         })
     }
 
-    fun fetchRefreshToken(token: String, reToken: String){
-        val call = retroInstance.refreshToken(token,reToken)
-        call.enqueue(object : Callback<RefreshToken>{
+    fun fetchRefreshToken(token: String, reToken: String) {
+        val call = retroInstance.refreshToken(token, reToken)
+        call.enqueue(object : Callback<RefreshToken> {
             override fun onResponse(call: Call<RefreshToken>, response: Response<RefreshToken>) {
-                if (response.code()==200) reTokenLiveData.postValue(response.body())
+                if (response.code() == 200) reTokenLiveData.postValue(response.body())
                 else reTokenLiveData.postValue(null)
             }
 
             override fun onFailure(call: Call<RefreshToken>, t: Throwable) {
                 reTokenLiveData.postValue(null)
-                Log.d("call api refresh token","failed")
+                Log.d("call api refresh token", "failed")
             }
 
         })

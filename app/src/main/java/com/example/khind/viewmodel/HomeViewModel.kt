@@ -8,35 +8,58 @@ import com.google.android.gms.maps.GoogleMap
 import okhttp3.MultipartBody
 
 class HomeViewModel : ViewModel() {
-    private val mHomeRepository = HomeRepository()
     var nowSensor: Sensor? = null
     private lateinit var map: GoogleMap
+    private val mHomeRepository = HomeRepository()
 
-    fun setMapData(data: GoogleMap) {map = data}
-    fun getMapData(): GoogleMap {return map}
+    fun setMapData(data: GoogleMap) {
+        map = data
+    }
 
-    fun setNowSensorData(data: Sensor) { nowSensor = data }
+    fun getMapData(): GoogleMap {
+        return map
+    }
+
+    fun setNowSensorData(data: Sensor) {
+        nowSensor = data
+    }
+
     fun getNowSensorData(): Sensor? = nowSensor
 
-    fun callAPISensors(token: String) { mHomeRepository.fetchSensors(token) }
-    fun callAPIDetailSensor(token: String, sensorID: String) { mHomeRepository.fetchDetailSensor(token, sensorID) }
-    fun callAPIChangePass(token: String, password: String, confirmPass: String, currentPass: String) {
+    fun callAPISensors(token: String) {
+        mHomeRepository.fetchSensors(token)
+    }
+
+    fun callAPIDetailSensor(token: String, sensorID: String) {
+        mHomeRepository.fetchDetailSensor(token, sensorID)
+    }
+
+    fun callAPIChangePass(
+        token: String,
+        password: String,
+        confirmPass: String,
+        currentPass: String
+    ) {
         mHomeRepository.changePassword(token, password, confirmPass, currentPass)
     }
-    fun callAPIChangeAvatar(token: String, avt: MultipartBody.Part){
+
+    fun callAPIChangeAvatar(token: String, avt: MultipartBody.Part) {
         mHomeRepository.changeAvatar(token, avt)
     }
 
     fun getSensorsLiveDataObserver(): MutableLiveData<ResponseSensor> {
         return mHomeRepository.sensorsLiveDataObserver()
     }
-    fun getDetailSensorLiveDataObserver(): MutableLiveData<DetailSensor>{
+
+    fun getDetailSensorLiveDataObserver(): MutableLiveData<DetailSensor> {
         return mHomeRepository.detailSensorLivaDataObserver()
     }
-    fun getChangePassLiveDataObserver(): MutableLiveData<ResponseChangePass>{
+
+    fun getChangePassLiveDataObserver(): MutableLiveData<ResponseChangePass> {
         return mHomeRepository.changePassLiveDataObserver()
     }
-    fun getChangeAvatarLiveDataObserver(): MutableLiveData<ResponseChangeAvatar>{
+
+    fun getChangeAvatarLiveDataObserver(): MutableLiveData<ResponseChangeAvatar> {
         return mHomeRepository.changeAvatarLiveDataObserver()
     }
 }

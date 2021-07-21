@@ -18,26 +18,26 @@ import kotlin.properties.Delegates
 
 class StatusFragment : Fragment(R.layout.fragment_status) {
 
-    private lateinit var token: String
+    var isCall = false
     lateinit var reToken: String
+    private lateinit var token: String
+    lateinit var imgStatusText: ImageView
+    private lateinit var imgStatus: ImageView
     var expired by Delegates.notNull<Long>()
+    private lateinit var homeActivity: HomeActivity
     private lateinit var loginViewModel: LoginViewModel
     private lateinit var homeViewModel: HomeViewModel
-    private lateinit var homeActivity: HomeActivity
-    private lateinit var imgStatus: ImageView
-    lateinit var imgStatusText: ImageView
-    var isCall = false
 
     private fun makeObserver() {
-        homeViewModel.getSensorsLiveDataObserver().observe(viewLifecycleOwner,{
-            if (it!=null){
-                if (homeViewModel.getNowSensorData()==null) homeViewModel.setNowSensorData(it.data[0])
+        homeViewModel.getSensorsLiveDataObserver().observe(viewLifecycleOwner, {
+            if (it != null) {
+                if (homeViewModel.getNowSensorData() == null) homeViewModel.setNowSensorData(it.data[0])
                 setState()
             }
         })
 
-        loginViewModel.getReTokenLiveDataObserver().observe(viewLifecycleOwner,{
-            if (it!=null && isCall) {
+        loginViewModel.getReTokenLiveDataObserver().observe(viewLifecycleOwner, {
+            if (it != null && isCall) {
                 homeViewModel.callAPISensors(loginViewModel.getTokenLogin())
                 isCall = false
             }
@@ -47,7 +47,7 @@ class StatusFragment : Fragment(R.layout.fragment_status) {
     private fun setState() {
         val sensor = homeViewModel.getNowSensorData()
         homeActivity.setNameAddress()
-        when (sensor?.alarm){
+        when (sensor?.alarm) {
             "clear" -> {
                 imgStatus.setImageResource(R.drawable.green_status)
                 imgStatusText.setImageResource(R.drawable.allclear)
@@ -66,7 +66,7 @@ class StatusFragment : Fragment(R.layout.fragment_status) {
         val view = inflater.inflate(R.layout.fragment_status, container, false)
 
         val titleToolBar = activity?.findViewById<TextView>(R.id.titleToolbar)
-        (activity as HomeActivity).supportActionBar?.title=""
+        (activity as HomeActivity).supportActionBar?.title = ""
         titleToolBar?.text = "Dashboard"
 
         homeActivity = activity as HomeActivity
@@ -78,7 +78,7 @@ class StatusFragment : Fragment(R.layout.fragment_status) {
         expired = loginViewModel.getExpired()
 
         makeObserver()
-        if (expired*1000>System.currentTimeMillis()) homeViewModel.callAPISensors(token)
+        if (expired * 1000 > System.currentTimeMillis()) homeViewModel.callAPISensors(token)
         else {
             isCall = true
             loginViewModel.callAPIRefreshToken(token, reToken)

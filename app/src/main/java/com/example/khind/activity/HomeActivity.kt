@@ -23,6 +23,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.*
@@ -40,11 +41,7 @@ import kotlin.math.log
 import kotlin.properties.Delegates
 
 
-class HomeActivity : AppCompatActivity() {
-
-    private lateinit var navController: NavController
-    private lateinit var appBarConfiguration: AppBarConfiguration
-    private lateinit var binding: ActivityHomeBinding
+class HomeActivity : AppCompatActivity(R.layout.fragment_fag) {
 
     companion object {
         lateinit var fragmentManager: FragmentManager
@@ -52,12 +49,15 @@ class HomeActivity : AppCompatActivity() {
         var homeViewModel = HomeViewModel()
     }
 
-    private lateinit var token: String
-    private var expired by Delegates.notNull<Long>()
-    private lateinit var reToken: String
     var email: String = ""
     var avatar: String? = null
+    private lateinit var token: String
+    private lateinit var reToken: String
     private lateinit var txtAddress: TextView
+    private var expired by Delegates.notNull<Long>()
+    private lateinit var navController: NavController
+    private lateinit var binding: ActivityHomeBinding
+    private lateinit var appBarConfiguration: AppBarConfiguration
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -87,7 +87,8 @@ class HomeActivity : AppCompatActivity() {
                 R.id.statusFragment,
                 R.id.mapFragment,
                 R.id.historyFragment,
-                R.id.profileFragment
+                R.id.profileFragment,
+                R.id.settingFragment
             ),
             binding.drawerLayout
         )
@@ -98,6 +99,14 @@ class HomeActivity : AppCompatActivity() {
         binding.navView.setupWithNavController(navController)
         binding.bottomNav.setupWithNavController(navController)
 
+        binding.nowSensor.setOnClickListener {
+            navController.navigateUp()
+            navController.navigate(R.id.changeLocationFragment)
+        }
+        binding.imgChangeLo.setOnClickListener {
+            navController.navigateUp()
+            navController.navigate(R.id.statusFragment)
+        }
         makeObserver()
     }
 
@@ -108,7 +117,6 @@ class HomeActivity : AppCompatActivity() {
                 reToken = it.data.token.refresh_token
                 expired = it.data.token.expired_at
                 loginViewModel.setData(token, reToken, expired, email, avatar)
-                Log.d("refresh token from home activity",token)
             }
         })
     }

@@ -49,8 +49,8 @@ class SetupScheduleFragment : Fragment() {
 
     private fun selectEndTime() {
         val timeSetListener = TimePickerDialog.OnTimeSetListener { _, hourOfDay, minute ->
-            val hour = if (hourOfDay<10) "0$hourOfDay" else hourOfDay.toString()
-            val minu = if (minute<10) "0$minute" else minute.toString()
+            val hour = if (hourOfDay < 10) "0$hourOfDay" else hourOfDay.toString()
+            val minu = if (minute < 10) "0$minute" else minute.toString()
             endTime.text = "$hour:$minu"
         }
         val timePickerDialog = TimePickerDialog(
@@ -62,8 +62,8 @@ class SetupScheduleFragment : Fragment() {
 
     private fun selectStartTime() {
         val timeSetListener = TimePickerDialog.OnTimeSetListener { _, hourOfDay, minute ->
-            val hour = if (hourOfDay<10) "0$hourOfDay" else hourOfDay.toString()
-            val minu = if (minute<10) "0$minute" else minute.toString()
+            val hour = if (hourOfDay < 10) "0$hourOfDay" else hourOfDay.toString()
+            val minu = if (minute < 10) "0$minute" else minute.toString()
             startTime.text = "$hour:$minu"
         }
         val timePickerDialog = TimePickerDialog(

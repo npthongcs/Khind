@@ -3,7 +3,7 @@ package com.example.khind.viewmodel
 import androidx.lifecycle.ViewModel
 import com.example.khind.repository.LoginRepository
 
-class LoginViewModel: ViewModel() {
+class LoginViewModel : ViewModel() {
     private val loginRepository = LoginRepository()
 
     private var token: String = ""
@@ -16,7 +16,7 @@ class LoginViewModel: ViewModel() {
         return expiredAt
     }
 
-    fun setData(token: String, reToken: String, expired: Long, email: String, avatar: String?){
+    fun setData(token: String, reToken: String, expired: Long, email: String, avatar: String?) {
         this.token = token
         this.reToken = reToken
         this.expiredAt = expired
@@ -24,19 +24,19 @@ class LoginViewModel: ViewModel() {
         this.avatar = avatar
     }
 
-    fun getTokenLogin():String {
+    fun getTokenLogin(): String {
         return token
     }
 
-    fun getReTokenLogin():String {
+    fun getReTokenLogin(): String {
         return reToken
     }
 
-    fun getEmailData():String {
+    fun getEmailData(): String {
         return email
     }
 
-    fun getAvatarLink(): String?{
+    fun getAvatarLink(): String? {
         return avatar
     }
 
@@ -44,7 +44,8 @@ class LoginViewModel: ViewModel() {
 
     fun getLoginLiveDataObserver() = loginRepository.loginLiveDataObserver()
 
-    fun callAPILogin(email: String, password: String) = loginRepository.fetchLogin(email,password)
+    fun callAPILogin(email: String, password: String) = loginRepository.fetchLogin(email, password)
 
-    fun callAPIRefreshToken(token: String, reToken: String) = loginRepository.fetchRefreshToken(token, reToken)
+    fun callAPIRefreshToken(token: String, reToken: String) =
+        loginRepository.fetchRefreshToken(token, reToken)
 }

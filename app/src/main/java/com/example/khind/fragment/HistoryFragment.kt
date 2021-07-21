@@ -18,7 +18,7 @@ class HistoryFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val titleToolBar = activity?.findViewById<TextView>(R.id.titleToolbar)
-        (activity as HomeActivity).supportActionBar?.title=""
+        (activity as HomeActivity).supportActionBar?.title = ""
         titleToolBar?.text = "Dashboard"
         return inflater.inflate(R.layout.fragment_history, container, false)
     }

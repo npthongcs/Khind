@@ -24,12 +24,12 @@ import kotlin.properties.Delegates
 
 class MapFragment : Fragment() {
 
-    lateinit var homeActivity: HomeActivity
-    private lateinit var homeViewModel: HomeViewModel
-    private lateinit var loginViewModel: LoginViewModel
-    var expired by Delegates.notNull<Long>()
     var isCall = false
     lateinit var nowSensor: Sensor
+    lateinit var homeActivity: HomeActivity
+    var expired by Delegates.notNull<Long>()
+    private lateinit var homeViewModel: HomeViewModel
+    private lateinit var loginViewModel: LoginViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -37,7 +37,7 @@ class MapFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val titleToolBar = activity?.findViewById<TextView>(R.id.titleToolbar)
-        (activity as HomeActivity).supportActionBar?.title=""
+        (activity as HomeActivity).supportActionBar?.title = ""
         titleToolBar?.text = "Dashboard"
         homeActivity = activity as HomeActivity
         homeViewModel = homeActivity.getViewModelHome()
@@ -92,7 +92,7 @@ class MapFragment : Fragment() {
         val marker = MarkerOptions().position(coordinates).title(title)
         drawCircle(coordinates, 90.0, Color.RED)
         drawCircle(coordinates, 120.0, Color.RED)
-        drawCircle(coordinates, 150.0, Color.CYAN)
+        drawCircle(coordinates, 150.0, Color.RED)
         homeViewModel.getMapData().addMarker(marker)
         homeViewModel.getMapData()
             .animateCamera(CameraUpdateFactory.newLatLngZoom(coordinates, 17f), 2000, null)
@@ -104,7 +104,7 @@ class MapFragment : Fragment() {
             center(point)
             radius(radius)
             strokeColor(color)
-            strokeWidth(2f)
+            strokeWidth(3f)
             homeViewModel.getMapData().addCircle(circleOptions)
         }
 

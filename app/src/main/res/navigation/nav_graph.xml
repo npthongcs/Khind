@@ -60,10 +60,44 @@
         <action
             android:id="@+id/action_settingFragment_to_setupScheduleFragment"
             app:destination="@id/setupScheduleFragment" />
+        <action
+            android:id="@+id/action_settingFragment_to_fagFragment"
+            app:destination="@id/fagFragment" />
+        <action
+            android:id="@+id/action_settingFragment_to_policyFragment"
+            app:destination="@id/policyFragment" />
     </fragment>
     <fragment
         android:id="@+id/setupScheduleFragment"
         android:name="com.example.khind.fragment.SetupScheduleFragment"
         android:label="fragment_setup_schedule"
         tools:layout="@layout/fragment_setup_schedule" />
+    <fragment
+        android:id="@+id/supportFragment"
+        android:name="com.example.khind.fragment.SupportFragment"
+        android:label="fragment_support"
+        tools:layout="@layout/fragment_support" />
+    <fragment
+        android:id="@+id/changeLocationFragment"
+        android:name="com.example.khind.fragment.ChangeLocationFragment"
+        android:label="fragment_change_location"
+        tools:layout="@layout/fragment_change_location" >
+        <action
+            android:id="@+id/action_changeLocationFragment_to_statusFragment"
+            app:destination="@id/statusFragment" />
+    </fragment>
+    <activity
+        android:id="@+id/homeActivity"
+        android:name="com.example.khind.activity.HomeActivity"
+        android:label="HomeActivity" />
+    <fragment
+        android:id="@+id/fagFragment"
+        android:name="com.example.khind.fragment.FagFragment"
+        android:label="fragment_fag"
+        tools:layout="@layout/fragment_fag" />
+    <fragment
+        android:id="@+id/policyFragment"
+        android:name="com.example.khind.fragment.PolicyFragment"
+        android:label="fragment_policy"
+        tools:layout="@layout/fragment_policy" />
 </navigation>

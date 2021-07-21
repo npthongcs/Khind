@@ -19,42 +19,40 @@ import retrofit2.Response
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivityMainBinding
     private var viewModel = LoginViewModel()
+    private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         supportActionBar?.hide()
 
-        binding = DataBindingUtil.setContentView(this,R.layout.activity_main)
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         makeObserver()
         getData()
     }
 
     private fun getData() {
         binding.btnLogin.setOnClickListener {
-            var email: String = binding.etEmail.text.toString() // nho xoa
+            var email: String = binding.etEmail.text.toString()
             var password: String = binding.etPassword.text.toString()
-            email = "tahn@vinova.sg"
-            password = "vinova123"
-            if (email!="" && password!="") {
-                viewModel.callAPILogin(email,password)
+            if (email != "" && password != "") {
+                viewModel.callAPILogin(email, password)
             } else {
-                Toast.makeText(this,"Email or password is empty",Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Email or password is empty", Toast.LENGTH_SHORT).show()
             }
         }
     }
 
     private fun makeObserver() {
         viewModel = ViewModelProvider(this).get(LoginViewModel::class.java)
-        viewModel.getLoginLiveDataObserver().observe(this,{
-            if (it!=null){
-                val intent = Intent(this,HomeActivity::class.java)
-                intent.putExtra("user",it.data)
+        viewModel.getLoginLiveDataObserver().observe(this, {
+            if (it != null) {
+                val intent = Intent(this, HomeActivity::class.java)
+                intent.putExtra("user", it.data)
                 startActivity(intent)
             } else {
-                Toast.makeText(this,"Email or password is invalid",Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Email or password is invalid", Toast.LENGTH_SHORT).show()
             }
         })
     }

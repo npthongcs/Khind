@@ -20,10 +20,9 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyBonAYQCDF_ONnew5it8ie4HmHbgCmKHXc"/>
 
-        <activity android:name=".activity.NotifyActivity" />
         <activity android:name=".activity.HomeActivity" />
-<!--        <activity android:name=".activity.MainActivity" />-->
-        <activity android:name=".activity.MainActivity">
+        <activity android:name=".activity.MainActivity" />
+        <activity android:name=".activity.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

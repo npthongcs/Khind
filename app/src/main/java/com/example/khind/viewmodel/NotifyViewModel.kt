@@ -10,18 +10,19 @@ class NotifyViewModel : ViewModel() {
     private val notifyRepository = NotifyRepository()
     var listMessage = ArrayList<Message>()
 
-    fun getListMessageData(): ArrayList<Message>{
+    fun getListMessageData(): ArrayList<Message> {
         return listMessage
     }
-    fun setListMessageData(data: ArrayList<Message>){
+
+    fun setListMessageData(data: ArrayList<Message>) {
         listMessage.addAll(data)
     }
 
-    fun callApiGetMessages(token: String, page: Int){
+    fun callApiGetMessages(token: String, page: Int) {
         notifyRepository.fetchMessages(token, page)
     }
 
-    fun getMessagesLiveDataObserver(): MutableLiveData<ResponseMessage>{
+    fun getMessagesLiveDataObserver(): MutableLiveData<ResponseMessage> {
         return notifyRepository.messagesLiveDataObserver()
     }
 }

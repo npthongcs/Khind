@@ -10,16 +10,17 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class NotifyRepository {
-    private val retroInstance: ApiService = RetroInstance.getRetroInstance().create(ApiService::class.java)
     var messagesLiveData = MutableLiveData<ResponseMessage>()
+    private val retroInstance: ApiService =
+        RetroInstance.getRetroInstance().create(ApiService::class.java)
 
-    fun messagesLiveDataObserver(): MutableLiveData<ResponseMessage>{
+    fun messagesLiveDataObserver(): MutableLiveData<ResponseMessage> {
         return messagesLiveData
     }
 
-    fun fetchMessages(token: String, page: Int){
+    fun fetchMessages(token: String, page: Int) {
         val call = retroInstance.getMessage(token, page)
-        call.enqueue(object : Callback<ResponseMessage>{
+        call.enqueue(object : Callback<ResponseMessage> {
             override fun onResponse(
                 call: Call<ResponseMessage>,
                 response: Response<ResponseMessage>
@@ -30,7 +31,7 @@ class NotifyRepository {
 
             override fun onFailure(call: Call<ResponseMessage>, t: Throwable) {
                 messagesLiveData.postValue(null)
-                Log.d("call api get messages","failed")
+                Log.d("call api get messages", "failed")
             }
 
         })

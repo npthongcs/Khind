@@ -39,14 +39,14 @@ import kotlin.properties.Delegates
 
 class ProfileFragment : Fragment(R.layout.fragment_profile) {
 
+    var isChange = false
+    lateinit var mUri: Uri
     lateinit var imgAvatar: ImageView
     lateinit var defaultAvatar: ImageView
-    lateinit var mUri: Uri
-    private val loginViewModel = HomeActivity().getViewModelLogin()
-    private val homeViewModel = HomeActivity().getViewModelHome()
     private var expired by Delegates.notNull<Long>()
-    var isChange = false
     lateinit var multipartBodyAvt: MultipartBody.Part
+    private val homeViewModel = HomeActivity().getViewModelHome()
+    private val loginViewModel = HomeActivity().getViewModelLogin()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,7 +65,7 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_profile, container, false)
         val titleToolBar = activity?.findViewById<TextView>(R.id.titleToolbar)
-        (activity as HomeActivity).supportActionBar?.title=""
+        (activity as HomeActivity).supportActionBar?.title = ""
         titleToolBar?.text = "My profile"
         val changePass = view.findViewById<ImageView>(R.id.idChangePass)
         val email = view.findViewById<TextView>(R.id.idEmail)
@@ -109,7 +109,6 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
     private val requestMultiplePermissions =
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
             if (permissions[Manifest.permission.READ_EXTERNAL_STORAGE] == true) {
-                Log.d("Read external storage", "permission granted")
                 openGallery()
             }
         }
@@ -123,14 +122,14 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
     }
 
     private val mActivityResultLauncher: ActivityResultLauncher<Intent> = registerForActivityResult(
-        ActivityResultContracts.StartActivityForResult()) {
-        Log.d("select image","onActivityResult")
-        if (it.resultCode == Activity.RESULT_OK){
+        ActivityResultContracts.StartActivityForResult()
+    ) {
+        if (it.resultCode == Activity.RESULT_OK) {
             val data: Intent = it.data ?: return@registerForActivityResult
             val uri: Uri? = data.data
             try {
                 uri?.let {
-                    mUri = if(Build.VERSION.SDK_INT < 28) {
+                    mUri = if (Build.VERSION.SDK_INT < 28) {
                         val bitmap = MediaStore.Images.Media.getBitmap(
                             activity?.contentResolver,
                             uri
@@ -138,7 +137,12 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
                         imgAvatar.setImageBitmap(bitmap)
                         uri
                     } else {
-                        val source = activity?.let { it1 -> ImageDecoder.createSource(it1.contentResolver, uri) }
+                        val source = activity?.let { it1 ->
+                            ImageDecoder.createSource(
+                                it1.contentResolver,
+                                uri
+                            )
+                        }
                         val bitmap = source?.let { it1 -> ImageDecoder.decodeBitmap(it1) }
                         imgAvatar.setImageBitmap(bitmap)
                         uri
@@ -152,34 +156,43 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
     }
 
     private fun makeApiCall() {
-        val strRealPath: String = RealPathUtil.getRealPath(context,mUri)
+        val strRealPath: String = RealPathUtil.getRealPath(context, mUri)
         val file = File(strRealPath)
-        val requestBodyAvt: RequestBody = RequestBody.create(MediaType.parse("multipart/form-data"),file)
-        multipartBodyAvt = MultipartBody.Part.createFormData("avatar",file.name,requestBodyAvt)
+        val requestBodyAvt: RequestBody =
+            RequestBody.create(MediaType.parse("multipart/form-data"), file)
+        multipartBodyAvt = MultipartBody.Part.createFormData("avatar", file.name, requestBodyAvt)
         expired = loginViewModel.getExpired()
-        if (expired * 1000 > System.currentTimeMillis()) homeViewModel.callAPIChangeAvatar(loginViewModel.getTokenLogin(),multipartBodyAvt)
+        if (expired * 1000 > System.currentTimeMillis()) homeViewModel.callAPIChangeAvatar(
+            loginViewModel.getTokenLogin(),
+            multipartBodyAvt
+        )
         else {
             isChange = true
-            loginViewModel.callAPIRefreshToken(loginViewModel.getTokenLogin(),loginViewModel.getReTokenLogin())
+            loginViewModel.callAPIRefreshToken(
+                loginViewModel.getTokenLogin(),
+                loginViewModel.getReTokenLogin()
+            )
         }
     }
 
     private fun makeObserver() {
-        loginViewModel.getReTokenLiveDataObserver().observe(viewLifecycleOwner,{
-            if (it!=null && isChange){
+        loginViewModel.getReTokenLiveDataObserver().observe(viewLifecycleOwner, {
+            if (it != null && isChange) {
                 isChange = false
-                homeViewModel.callAPIChangeAvatar(loginViewModel.getTokenLogin(),multipartBodyAvt)
+                homeViewModel.callAPIChangeAvatar(loginViewModel.getTokenLogin(), multipartBodyAvt)
             }
         })
-        homeViewModel.getChangeAvatarLiveDataObserver().observe(viewLifecycleOwner,{
-            if (it!=null){
+        homeViewModel.getChangeAvatarLiveDataObserver().observe(viewLifecycleOwner, {
+            if (it != null) {
                 loadImage(it.data.avatar)
             }
         })
     }
 
     private fun loadImage(avatarLink: String) {
-        context?.let { Glide.with(it).load(avatarLink).override(250,250).fitCenter().into(imgAvatar) }
+        context?.let {
+            Glide.with(it).load(avatarLink).override(300, 300).fitCenter().into(imgAvatar)
+        }
     }
 
 

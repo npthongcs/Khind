@@ -1,10 +1,8 @@
 package com.example.khind.fragment
 
 import android.os.Bundle
+import android.view.*
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.databinding.DataBindingUtil
@@ -21,15 +19,16 @@ class DetailMessageFragment : Fragment(R.layout.fragment_detail_message) {
 
     private val args: DetailMessageFragmentArgs by navArgs()
     private var _binding: FragmentDetailMessageBinding? = null
+
     // This property is only valid between onCreateView and onDestroyView.
     private val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         val titleToolBar = activity?.findViewById<TextView>(R.id.titleToolbar)
-        (activity as HomeActivity).supportActionBar?.title=""
+        (activity as HomeActivity).supportActionBar?.title = ""
         titleToolBar?.text = "Details"
         // Inflate the layout for this fragment
         _binding = FragmentDetailMessageBinding.inflate(inflater, container, false)
@@ -62,6 +61,16 @@ class DetailMessageFragment : Fragment(R.layout.fragment_detail_message) {
         val location = homeActivity.findViewById<ConstraintLayout>(R.id.idChangeLocation)
         location.visibility = View.VISIBLE
         botBar.visibility = View.VISIBLE
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        menu.clear()
     }
 
 }

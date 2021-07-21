@@ -33,12 +33,13 @@ interface ApiService {
         @Query("page") page: Int
     ): Call<ResponseMessage>
 
+    @FormUrlEncoded
     @PUT("users/change_password")
     fun changePassword(
         @Header("X-Http-Token") token: String,
-        @Query("password") password: String,
-        @Query("password_confirmation") confirmPass: String,
-        @Query("currentPass") currentPass: String
+        @Field("password") password: String,
+        @Field("password_confirmation") confirmPass: String,
+        @Field("current_password") currentPass: String
     ): Call<ResponseChangePass>
 
     @Multipart

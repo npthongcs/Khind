@@ -10,4 +10,4 @@ data class Message(
     val description: String,
     val photo: String,
     val created_at: Long
-): Serializable
+) : Serializable

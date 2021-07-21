@@ -16,7 +16,7 @@
             android:id="@+id/imageView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="50dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
@@ -57,6 +57,7 @@
             android:layout_marginStart="25dp"
             android:layout_marginTop="15dp"
             android:ems="10"
+            android:background="@drawable/rectangle_while"
             android:hint="e.g. user@gmail.com"
             android:inputType="textEmailAddress"
             app:layout_constraintStart_toStartOf="parent"
@@ -83,6 +84,7 @@
             android:layout_marginStart="25dp"
             android:layout_marginTop="15dp"
             android:ems="10"
+            android:background="@drawable/rectangle_while"
             android:inputType="textPassword"
             android:hint="Enter password"
             app:layout_constraintStart_toStartOf="parent"
@@ -90,7 +92,7 @@
 
         <Button
             android:id="@+id/btnLogin"
-            android:layout_width="300dp"
+            android:layout_width="350dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:backgroundTint="@color/black"

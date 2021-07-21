@@ -22,14 +22,14 @@ import kotlin.properties.Delegates
 
 class MessageFragment : Fragment(), MessageOnClickListener {
 
-    private lateinit var loginViewModel: LoginViewModel
-    private lateinit var notifyViewModel: NotifyViewModel
-    private lateinit var messageAdapter: MessageAdapter
-    private lateinit var rvMessage: RecyclerView
-    private var expired by Delegates.notNull<Long>()
     var pageCount = 1
     var isLoad = false
     var isMessage = false
+    private lateinit var rvMessage: RecyclerView
+    private var expired by Delegates.notNull<Long>()
+    private lateinit var loginViewModel: LoginViewModel
+    private lateinit var messageAdapter: MessageAdapter
+    private lateinit var notifyViewModel: NotifyViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -41,14 +41,20 @@ class MessageFragment : Fragment(), MessageOnClickListener {
         notifyViewModel = ViewModelProvider(this).get(NotifyViewModel::class.java)
         messageAdapter = MessageAdapter(notifyViewModel.getListMessageData())
         rvMessage = view.findViewById(R.id.rvMessage)
-        expired = loginViewModel.getExpired()!!
+        expired = loginViewModel.getExpired()
 
         makeObserver()
 
-        if (expired*1000>System.currentTimeMillis()) notifyViewModel.callApiGetMessages(loginViewModel.getTokenLogin(),pageCount)
+        if (expired * 1000 > System.currentTimeMillis()) notifyViewModel.callApiGetMessages(
+            loginViewModel.getTokenLogin(),
+            pageCount
+        )
         else {
             isMessage = true
-            loginViewModel.callAPIRefreshToken(loginViewModel.getTokenLogin(),loginViewModel.getReTokenLogin())
+            loginViewModel.callAPIRefreshToken(
+                loginViewModel.getTokenLogin(),
+                loginViewModel.getReTokenLogin()
+            )
         }
 
         rvMessage.apply {
@@ -63,18 +69,24 @@ class MessageFragment : Fragment(), MessageOnClickListener {
     }
 
     private fun initScrollListener() {
-        rvMessage.addOnScrollListener(object : RecyclerView.OnScrollListener(){
+        rvMessage.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 val linearLayoutManager = rvMessage.layoutManager as LinearLayoutManager
-                if (!isLoad){
-                    if (linearLayoutManager.findLastCompletelyVisibleItemPosition()==messageAdapter.itemCount-1){
+                if (!isLoad) {
+                    if (linearLayoutManager.findLastCompletelyVisibleItemPosition() == messageAdapter.itemCount - 1) {
                         isLoad = true
                         pageCount++
-                        if (expired*1000>System.currentTimeMillis()) notifyViewModel.callApiGetMessages(loginViewModel.getTokenLogin(),pageCount)
+                        if (expired * 1000 > System.currentTimeMillis()) notifyViewModel.callApiGetMessages(
+                            loginViewModel.getTokenLogin(),
+                            pageCount
+                        )
                         else {
                             isMessage = true
-                            loginViewModel.callAPIRefreshToken(loginViewModel.getTokenLogin(),loginViewModel.getReTokenLogin())
+                            loginViewModel.callAPIRefreshToken(
+                                loginViewModel.getTokenLogin(),
+                                loginViewModel.getReTokenLogin()
+                            )
                         }
                     }
                 }
@@ -83,21 +95,21 @@ class MessageFragment : Fragment(), MessageOnClickListener {
     }
 
     private fun makeObserver() {
-        loginViewModel.getReTokenLiveDataObserver().observe(viewLifecycleOwner,{
-            if (it!=null && isMessage){
-                notifyViewModel.callApiGetMessages(it.data.token.token,pageCount)
+        loginViewModel.getReTokenLiveDataObserver().observe(viewLifecycleOwner, {
+            if (it != null && isMessage) {
+                notifyViewModel.callApiGetMessages(it.data.token.token, pageCount)
                 isMessage = false
             }
         })
 
-        notifyViewModel.getMessagesLiveDataObserver().observe(viewLifecycleOwner,{
-            if (it!=null){
-                Log.d("it fr",it.toString())
+        notifyViewModel.getMessagesLiveDataObserver().observe(viewLifecycleOwner, {
+            if (it != null) {
+                Log.d("it fr", it.toString())
                 notifyViewModel.setListMessageData(it.data)
-                if (pageCount==1) messageAdapter.notifyDataSetChanged()
+                if (pageCount == 1) messageAdapter.notifyDataSetChanged()
                 else {
                     val currentSize = messageAdapter.itemCount
-                    messageAdapter.notifyItemRangeInserted(currentSize,it.data.size)
+                    messageAdapter.notifyItemRangeInserted(currentSize, it.data.size)
                 }
                 isLoad = false
             }

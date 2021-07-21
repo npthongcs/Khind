@@ -12,89 +12,90 @@ import retrofit2.Response
 import java.io.File
 
 class HomeRepository {
-    private val retroInstance : ApiService = RetroInstance.getRetroInstance().create(ApiService::class.java)
+    private val retroInstance: ApiService =
+        RetroInstance.getRetroInstance().create(ApiService::class.java)
     var sensorsLiveData = MutableLiveData<ResponseSensor>()
     var detailSensorLivedata = MutableLiveData<DetailSensor>()
     var changePassLiveData = MutableLiveData<ResponseChangePass>()
     var changeAvatarLiveData = MutableLiveData<ResponseChangeAvatar>()
 
-    fun sensorsLiveDataObserver(): MutableLiveData<ResponseSensor>{
+    fun sensorsLiveDataObserver(): MutableLiveData<ResponseSensor> {
         return sensorsLiveData
     }
 
-    fun detailSensorLivaDataObserver(): MutableLiveData<DetailSensor>{
+    fun detailSensorLivaDataObserver(): MutableLiveData<DetailSensor> {
         return detailSensorLivedata
     }
 
-    fun changePassLiveDataObserver(): MutableLiveData<ResponseChangePass>{
+    fun changePassLiveDataObserver(): MutableLiveData<ResponseChangePass> {
         return changePassLiveData
     }
 
-    fun changeAvatarLiveDataObserver(): MutableLiveData<ResponseChangeAvatar>{
+    fun changeAvatarLiveDataObserver(): MutableLiveData<ResponseChangeAvatar> {
         return changeAvatarLiveData
     }
 
-    fun fetchSensors(token: String){
+    fun fetchSensors(token: String) {
         val call = retroInstance.getSensors(token)
-        call.enqueue(object : Callback<ResponseSensor>{
+        call.enqueue(object : Callback<ResponseSensor> {
             override fun onResponse(
                 call: Call<ResponseSensor>,
                 response: Response<ResponseSensor>
             ) {
-                Log.d("call api","sensor")
-                if (response.code()==200) sensorsLiveData.postValue(response.body())
+                if (response.code() == 200) sensorsLiveData.postValue(response.body())
                 else sensorsLiveData.postValue(null)
             }
 
             override fun onFailure(call: Call<ResponseSensor>, t: Throwable) {
                 sensorsLiveData.postValue(null)
-                Log.d("call api fetch sensors failed",t.message.toString())
+                Log.d("call api fetch sensors failed", t.message.toString())
             }
 
         })
     }
 
-    fun fetchDetailSensor(token: String, sensorID: String){
-        val call = retroInstance.getDetailSensor(token,sensorID)
-        call.enqueue(object : Callback<DetailSensor>{
+    fun fetchDetailSensor(token: String, sensorID: String) {
+        val call = retroInstance.getDetailSensor(token, sensorID)
+        call.enqueue(object : Callback<DetailSensor> {
             override fun onResponse(call: Call<DetailSensor>, response: Response<DetailSensor>) {
-                if (response.code()==200) detailSensorLivedata.postValue(response.body())
+                if (response.code() == 200) detailSensorLivedata.postValue(response.body())
                 else detailSensorLivedata.postValue(null)
             }
 
             override fun onFailure(call: Call<DetailSensor>, t: Throwable) {
                 detailSensorLivedata.postValue(null)
-                Log.d("call api fetch detail sensor","failed")
+                Log.d("call api fetch detail sensor", "failed")
             }
 
         })
     }
 
-    fun changePassword(token: String, password: String, confirmPass: String, currentPass: String){
+    fun changePassword(token: String, password: String, confirmPass: String, currentPass: String) {
         val call = retroInstance.changePassword(token, password, confirmPass, currentPass)
-        call.enqueue(object : Callback<ResponseChangePass>{
+        call.enqueue(object : Callback<ResponseChangePass> {
             override fun onResponse(
                 call: Call<ResponseChangePass>,
                 response: Response<ResponseChangePass>
             ) {
+                Log.d("call api change pass", response.message())
                 if (response.isSuccessful) changePassLiveData.postValue(response.body())
                 else {
-                    val responseChangePass = ResponseChangePass("",false)
+                    val responseChangePass = ResponseChangePass("", false)
                     changePassLiveData.postValue(responseChangePass)
                 }
             }
 
             override fun onFailure(call: Call<ResponseChangePass>, t: Throwable) {
-                Log.d("call api change password","failed")
+                Log.d("call api change password", "failed")
                 changePassLiveData.postValue(null)
             }
 
         })
     }
 
-    fun changeAvatar(token: String, avt: MultipartBody.Part){
+    fun changeAvatar(token: String, avt: MultipartBody.Part) {
         val call = retroInstance.changeAvatar(token, avt)
-        call.enqueue(object : Callback<ResponseChangeAvatar>{
+        call.enqueue(object : Callback<ResponseChangeAvatar> {
             override fun onResponse(
                 call: Call<ResponseChangeAvatar>,
                 response: Response<ResponseChangeAvatar>
@@ -105,7 +106,7 @@ class HomeRepository {
 
             override fun onFailure(call: Call<ResponseChangeAvatar>, t: Throwable) {
                 changeAvatarLiveData.postValue(null)
-                Log.d("call api change avatar","failed")
+                Log.d("call api change avatar", "failed")
             }
 
         })

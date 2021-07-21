@@ -1,5 +1,6 @@
 package com.example.khind.fragment
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -11,6 +12,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.navigation.fragment.findNavController
 import com.example.khind.R
 import com.example.khind.activity.HomeActivity
+import com.example.khind.activity.MainActivity
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class SettingFragment : Fragment() {
@@ -22,7 +24,7 @@ class SettingFragment : Fragment() {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_setting, container, false)
         val titleToolBar = activity?.findViewById<TextView>(R.id.titleToolbar)
-        (activity as HomeActivity).supportActionBar?.title=""
+        (activity as HomeActivity).supportActionBar?.title = ""
         titleToolBar?.text = "Settings"
 
         val setupSchedule = view.findViewById<ImageView>(R.id.setupSchedule)
@@ -30,6 +32,22 @@ class SettingFragment : Fragment() {
             val action = SettingFragmentDirections.actionSettingFragmentToSetupScheduleFragment()
             findNavController().navigate(action)
         }
+        val faq = view.findViewById<ImageView>(R.id.faq)
+        faq.setOnClickListener {
+            val action = SettingFragmentDirections.actionSettingFragmentToFagFragment()
+            findNavController().navigate(action)
+        }
+        val policy = view.findViewById<ImageView>(R.id.policy)
+        policy.setOnClickListener {
+            val action = SettingFragmentDirections.actionSettingFragmentToPolicyFragment()
+            findNavController().navigate(action)
+        }
+        val logout = view.findViewById<ImageView>(R.id.logout)
+        logout.setOnClickListener {
+            val intent = Intent(context, MainActivity::class.java)
+            startActivity(intent)
+        }
+
         return view
     }
 

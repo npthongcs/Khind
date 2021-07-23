@@ -1,5 +1,6 @@
 package com.example.khind.fragment
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.*
@@ -8,6 +9,7 @@ import android.widget.*
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.example.khind.R
 import com.example.khind.activity.HomeActivity
+import com.example.khind.activity.MainActivity
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlin.properties.Delegates
 
@@ -88,7 +90,11 @@ class ChangePassFragment : Fragment(R.layout.fragment_change_pass) {
                 "Current password is invalid",
                 Toast.LENGTH_SHORT
             ).show()
-            else Toast.makeText(context, "Change password is successful", Toast.LENGTH_SHORT).show()
+            else {
+                Toast.makeText(context, "Change password is successful", Toast.LENGTH_SHORT).show()
+                val intent = Intent(context,MainActivity::class.java)
+                startActivity(intent)
+            }
         })
 
         loginViewModel.getReTokenLiveDataObserver().observe(viewLifecycleOwner, {
